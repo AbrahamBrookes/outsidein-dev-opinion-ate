@@ -1,11 +1,16 @@
 <template>
-  <div id="app">
-    Hello, world.
-  </div>
+	<div id="app">
+		<restaurant-screen />
+	</div>
 </template>
 
 <script>
+import RestaurantScreen from '@/components/RestaurantScreen'
+
 export default {
-  name: 'App',
+	name: 'App',
+	components: {
+		RestaurantScreen,
+	},
 }
 </script>
