@@ -20,23 +20,23 @@ describe('RestaurantsList', () => {
 					id: 2,
 					name: 'Pizza Place',
 				},
-			]
+			],
 		},
 		actions: {
 			load: jest.fn().mockName('load'),
-		}
+		},
 	}
-	// load up our test store with the mock module 
+	// load up our test store with the mock module
 	const store = new Vuex.Store({
 		modules: {
 			restaurants: restaurantsModule,
-		}
+		},
 	})
 	// mount the component we are testing to our local environment
 	const wrapper = mount(RestaurantsList, {localVue, store})
-	
+
 	// run some tests on it!
-	it('loads restaurants on mount', () => {	
+	it('loads restaurants on mount', () => {
 		expect(restaurantsModule.actions.load).toHaveBeenCalled()
 	})
 
