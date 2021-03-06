@@ -1,9 +1,13 @@
+import Vue from 'vue'
+import Vuetify from 'vuetify'
 import Vuex from 'vuex'
 import {mount, createLocalVue} from '@vue/test-utils'
 
 import RestaurantsList from '@/components/RestaurantsList'
 
 describe('RestaurantsList', () => {
+	// we're using vuetify so we want to include it in our tests to squash errors
+	Vue.use(Vuetify)
 	// first set up the environment for our tests
 	const localVue = createLocalVue()
 	localVue.use(Vuex)
