@@ -8,31 +8,73 @@ describe('restaurants', () => {
 	localVue.use(Vuex)
 
     describe('initial state', () => {
-        it('does not have the loading flag set', () => {
-            const store = new Vuex.Store({
+        let store 
+        beforeEach(() => {
+            store = new Vuex.Store({
                 modules: {
                     restaurants: restaurants()
                 }
             })
+        })
+
+        it('does not have the loading flag set', () => {
             expect(store.state.restaurants.loading).toEqual(false)
+        })
+
+        it('does not have the loading error flag set', () => {
+            expect(store.state.restaurants.loadError).toEqual(false)
         })
     })
 
     describe('while loading', () => {
-        // create a store with a stubbed api
-        const api = {
-            // this promise doesn't resolve
-            loadRestaurants: () => new Promise(() => {}),
-        }
-        const store = new Vuex.Store({
-            modules: {
-                restaurants: restaurants(api)
+        let store
+        beforeEach(() => {
+            // create a store with a stubbed api
+            const api = {
+                // this promise doesn't resolve
+                loadRestaurants: () => new Promise(() => {}),
             }
+            store = new Vuex.Store({
+                modules: {
+                    restaurants: restaurants(api, {loadError: true})
+                }
+            })
+            // our store is set up to run api.loadRestaurants which, in our stub, does not resolve
+            store.dispatch('restaurants/load')
         })
-        // our store is set up to run api.loadRestaurants which, in our stub, does not resolve
-        store.dispatch('restaurants/load')
-        // while our loadRestaurants call is yet to resolve, loading should equal true
-        expect(store.state.restaurants.loading).toEqual(true)
+
+        it('sets a loading flag', () => {
+            // while our loadRestaurants call is yet to resolve, loading should equal true
+            expect(store.state.restaurants.loading).toEqual(true)
+        })
+
+        it('clears the error flag', () => {
+            expect(store.state.restaurants.loadError).toBe(false)
+        })
+    })
+
+    describe('when loading fails', () => {
+        let store
+        // set up our store to have a failed load call
+        beforeEach(() => {
+            const api = {
+                loadRestaurants: () => Promise.reject()
+            }
+            store = new Vuex.Store({
+                modules: {
+                    restaurants: restaurants(api)
+                }
+            })
+            return store.dispatch('restaurants/load')
+        })
+
+        it('sets an error flag', () => {
+            expect(store.state.restaurants.loadError).toEqual(true)
+        })
+
+        it('clears the loading flag', () => {
+            expect(store.state.restaurants.loading).toBe(false)
+        })
     })
 
 	describe('when loading succeeds', () => {

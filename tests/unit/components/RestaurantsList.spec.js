@@ -25,7 +25,7 @@ const records = [
 
 let restaurantsModule, wrapper
 
-function mountWithStore(state = {records, loading: false}){
+function mountWithStore(state = {records, loading: false, loadError: false}){
 	// a mock modue that will be used by the component we are testing
 	restaurantsModule = {
 		namespaced: true,
@@ -87,6 +87,10 @@ describe('RestaurantsList', () => {
 
 		it('displays no loading indicator when not loading', () => {
 			expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(false)
+		})
+
+		it('displays no error popup when there is no error', () => {
+			expect(wrapper.find('[data-testid="loading-error"]').exists()).toBe(false)
 		})
 		
 	})

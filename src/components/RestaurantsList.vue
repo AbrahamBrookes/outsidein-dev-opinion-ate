@@ -6,8 +6,12 @@
             data-testid="loading-indicator"
             v-if="loading"
         />
-        <v-alert data-testid="loading-error" type="error">
-        </v-alert>
+        <div
+            v-if="loadError" 
+            data-testid="loading-error"
+        >
+            Restaurants failed to load
+        </div>
         <v-list-item 
             v-for="restaurant in restaurants"
             :key="restaurant.id"
@@ -28,7 +32,8 @@ export default {
     computed: {
         ...mapState({
             restaurants: state => state.restaurants.records,
-            loading: state => state.restaurants.loading
+            loading: state => state.restaurants.loading,
+            loadError: state => state.restaurants.loadError
         })
     },
     methods: {
