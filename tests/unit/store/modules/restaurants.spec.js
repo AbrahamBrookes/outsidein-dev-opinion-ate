@@ -19,7 +19,7 @@ describe('restaurants', () => {
     })
 
     describe('while loading', () => {
-        // create a store witha stubbed api
+        // create a store with a stubbed api
         const api = {
             // this promise doesn't resolve
             loadRestaurants: () => new Promise(() => {}),
