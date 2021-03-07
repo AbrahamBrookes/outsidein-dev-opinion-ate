@@ -25,7 +25,7 @@ const records = [
 
 let restaurantsModule, wrapper
 
-function mountWithStore(state = {records}){
+function mountWithStore(state = {records, loading: false}){
 	// a mock modue that will be used by the component we are testing
 	restaurantsModule = {
 		namespaced: true,
@@ -52,28 +52,34 @@ describe('RestaurantsList', () => {
 		mountWithStore()
 		expect(restaurantsModule.actions.load).toHaveBeenCalled()
 	})
-
-	it('displays a list of restaurants', () => {
-		wrapper = mountWithStore()
-		const firstRestaurantName = wrapper
-			.findAll('[data-testid="restaurant"]')
-			.at(0)
-			.text()
-		expect(firstRestaurantName).toBe('Sushi Place')
-		const secondRestaurantName = wrapper
-			.findAll('[data-testid="restaurant"]')
-			.at(1)
-			.text()
-		expect(secondRestaurantName).toBe('Pizza Place')
-	})
+	
 
 	it('displays a loading indicator when loading', () => {
 		wrapper = mountWithStore({loading: true})
 		expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(true)
 	})
 
-	it('displays no loading indicator when not loading', () => {
-		wrapper = mountWithStore({loading: false})
-		expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(false)
+	describe('when loading succeeds', () => {
+		beforeEach(() => {
+			mountWithStore()
+		})
+
+		it('displays a list of restaurants', () => {
+			const firstRestaurantName = wrapper
+				.findAll('[data-testid="restaurant"]')
+				.at(0)
+				.text()
+			expect(firstRestaurantName).toBe('Sushi Place')
+			const secondRestaurantName = wrapper
+				.findAll('[data-testid="restaurant"]')
+				.at(1)
+				.text()
+			expect(secondRestaurantName).toBe('Pizza Place')
+		})
+
+		it('displays no loading indicator when not loading', () => {
+			expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(false)
+		})
+		
 	})
 })
