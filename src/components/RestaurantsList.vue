@@ -6,6 +6,8 @@
             data-testid="loading-indicator"
             v-if="loading"
         />
+        <v-alert data-testid="loading-error" type="error">
+        </v-alert>
         <v-list-item 
             v-for="restaurant in restaurants"
             :key="restaurant.id"

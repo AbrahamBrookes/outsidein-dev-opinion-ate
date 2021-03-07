@@ -42,7 +42,6 @@ function mountWithStore(state = {records, loading: false}){
 	})
 	// mount the component we are testing to our local environment
 	wrapper = mount(RestaurantsList, {localVue, store})
-	return wrapper
 }
 
 describe('RestaurantsList', () => {
@@ -54,15 +53,15 @@ describe('RestaurantsList', () => {
 	})
 
 	it('displays a loading indicator when loading', () => {
-		wrapper = mountWithStore({loading: true})
+		mountWithStore({loading: true})
 		expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(true)
 	})
 
     describe('when loading fails', () => {
         beforeEach(() => {
-            mountWithStore({loadError: true})
-        })
-
+			mountWithStore({loadError: true})
+		})
+		
 		it('displays an error popup', () => {
 			expect(wrapper.find('[data-testid="loading-error"]').exists()).toBe(true)
 		})
