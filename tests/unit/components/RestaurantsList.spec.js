@@ -52,12 +52,21 @@ describe('RestaurantsList', () => {
 		mountWithStore()
 		expect(restaurantsModule.actions.load).toHaveBeenCalled()
 	})
-	
 
 	it('displays a loading indicator when loading', () => {
 		wrapper = mountWithStore({loading: true})
 		expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(true)
 	})
+
+    describe('when loading fails', () => {
+        beforeEach(() => {
+            mountWithStore({loadError: true})
+        })
+
+		it('displays an error popup', () => {
+			expect(wrapper.find('[data-testid="loading-error"]').exists()).toBe(true)
+		})
+    })
 
 	describe('when loading succeeds', () => {
 		beforeEach(() => {
