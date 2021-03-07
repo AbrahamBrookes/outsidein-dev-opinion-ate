@@ -5,27 +5,31 @@ import {mount, createLocalVue} from '@vue/test-utils'
 
 import RestaurantsList from '@/components/RestaurantsList'
 
-describe('RestaurantsList', () => {
-	// we're using vuetify so we want to include it in our tests to squash errors
-	Vue.use(Vuetify)
-	// first set up the environment for our tests
-	const localVue = createLocalVue()
-	localVue.use(Vuex)
+
+// we're using vuetify so we want to include it in our tests to squash errors
+Vue.use(Vuetify)
+// first set up the environment for our tests
+const localVue = createLocalVue()
+localVue.use(Vuex)
+
+const records = [
+	{
+		id: 1,
+		name: 'Sushi Place',
+	},
+	{
+		id: 2,
+		name: 'Pizza Place',
+	},
+]
+
+let restaurantsModule, wrapper
+
+function mountWithStore(state = {records}){
 	// a mock modue that will be used by the component we are testing
-	const restaurantsModule = {
+	restaurantsModule = {
 		namespaced: true,
-		state: {
-			records: [
-				{
-					id: 1,
-					name: 'Sushi Place',
-				},
-				{
-					id: 2,
-					name: 'Pizza Place',
-				},
-			],
-		},
+		state,
 		actions: {
 			load: jest.fn().mockName('load'),
 		},
@@ -37,14 +41,20 @@ describe('RestaurantsList', () => {
 		},
 	})
 	// mount the component we are testing to our local environment
-	const wrapper = mount(RestaurantsList, {localVue, store})
+	wrapper = mount(RestaurantsList, {localVue, store})
+	return wrapper
+}
+
+describe('RestaurantsList', () => {
 
 	// run some tests on it!
 	it('loads restaurants on mount', () => {
+		mountWithStore()
 		expect(restaurantsModule.actions.load).toHaveBeenCalled()
 	})
 
 	it('displays a list of restaurants', () => {
+		wrapper = mountWithStore()
 		const firstRestaurantName = wrapper
 			.findAll('[data-testid="restaurant"]')
 			.at(0)
@@ -55,5 +65,15 @@ describe('RestaurantsList', () => {
 			.at(1)
 			.text()
 		expect(secondRestaurantName).toBe('Pizza Place')
+	})
+
+	it('displays a loading indicator when loading', () => {
+		wrapper = mountWithStore({loading: true})
+		expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(true)
+	})
+
+	it('displays no loading indicator when not loading', () => {
+		wrapper = mountWithStore({loading: false})
+		expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(false)
 	})
 })
