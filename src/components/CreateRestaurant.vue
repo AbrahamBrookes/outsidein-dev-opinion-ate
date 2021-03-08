@@ -33,6 +33,9 @@ export default {
 
         saveNewRestaurant(){
             this.createRestaurant(this.name)
+                .then(() => {
+                    this.name = ''
+                })
         }
     }
 }

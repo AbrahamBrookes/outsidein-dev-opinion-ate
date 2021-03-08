@@ -41,7 +41,7 @@ describe('CreateRestaurant', () => {
         wrapper.destroy()
     })
 
-    describe('when filled in', () => {
+    describe('when the form is submitted', () => {
         beforeEach(() => {
             wrapper
                 .find('[data-testid="new-restaurant-name-field"]')
@@ -56,6 +56,11 @@ describe('CreateRestaurant', () => {
                 expect.anything(),
                 restaurantName
             )
+        })
+
+        it('clears the name input', () => {
+            expect(wrapper.find('[data-testid="new-restaurant-name-field"]')
+                .element.value).toEqual('')
         })
     })
 })
