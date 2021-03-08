@@ -113,7 +113,7 @@ describe('restaurants', () => {
         const existingRestaurant = {id: 1, name: 'Pizza Place'}
         const responseRestaurant = {id: 2, name: newRestaurantName}
 
-        let api, store
+        let api, store, savePromise
 
         beforeEach(() => {
             api = {
@@ -135,7 +135,7 @@ describe('restaurants', () => {
         describe('when save succeeds', () => {
             beforeEach(() => {
                 api.createRestaurant.mockResolvedValue(responseRestaurant)
-                store.dispatch('restaurants/create', newRestaurantName)
+                savePromise = store.dispatch('restaurants/create', newRestaurantName)
             })
 
             it('stores the returned restaurant in the store', () => {
@@ -143,6 +143,10 @@ describe('restaurants', () => {
                     existingRestaurant,
                     responseRestaurant
                 ])
+            })
+
+            it('returns a resolved promise', () => {
+                return expect(savePromise).resolves.toBeUndefined()
             })
         })
     })

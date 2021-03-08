@@ -7,6 +7,9 @@
             v-model="name"
             data-testid="new-restaurant-name-field"
         />
+        <div data-testid="new-restaurant-name-error" v-if="validationError">
+            Please enter a restaurant name
+        </div>
         <v-btn
             color="primary"
             class="black--text"
@@ -24,6 +27,7 @@ export default {
     data() {
         return {
             name: '',
+            validationError: false
         }
     },
     methods: {
@@ -32,10 +36,17 @@ export default {
         }),
 
         saveNewRestaurant(){
-            this.createRestaurant(this.name)
-                .then(() => {
-                    this.name = ''
-                })
+            if(this.name){
+                this.validationError = false
+
+                this.createRestaurant(this.name)
+                    .then(() => {
+                        this.name = ''
+                    })
+                    
+            } else {
+                this.validationError = true
+            }
         }
     }
 }
