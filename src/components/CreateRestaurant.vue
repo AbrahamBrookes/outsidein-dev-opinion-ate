@@ -10,6 +10,9 @@
         <div data-testid="new-restaurant-name-error" v-if="validationError">
             Please enter a restaurant name
         </div>
+        <div data-testid="new-restaurant-server-error" v-if="serverError">
+            There has been an error when saving your new restaurant. Please try again.
+        </div>
         <v-btn
             color="primary"
             class="black--text"
@@ -27,7 +30,8 @@ export default {
     data() {
         return {
             name: '',
-            validationError: false
+            validationError: false,
+            serverError: false,
         }
     },
     methods: {
@@ -36,6 +40,8 @@ export default {
         }),
 
         saveNewRestaurant(){
+            this.serverError = false
+            
             if(this.name){
                 this.validationError = false
 
@@ -43,7 +49,10 @@ export default {
                     .then(() => {
                         this.name = ''
                     })
-                    
+                    .catch(() => {
+                        this.serverError = true
+                    })
+
             } else {
                 this.validationError = true
             }
