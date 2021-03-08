@@ -132,6 +132,14 @@ describe('restaurants', () => {
             expect(api.createRestaurant).toHaveBeenCalledWith(newRestaurantName)
         })
 
+        describe('when save fails', () => {
+            it('returns a rejected promise', () => {
+                api.createRestaurant.mockRejectedValue()
+                savePromise = store.dispatch('restaurants/create', newRestaurantName)
+                return expect(savePromise).rejects.toBeUndefined()
+            })
+        })
+
         describe('when save succeeds', () => {
             beforeEach(() => {
                 api.createRestaurant.mockResolvedValue(responseRestaurant)

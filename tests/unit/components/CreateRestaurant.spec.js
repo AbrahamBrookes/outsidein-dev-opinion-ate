@@ -2,9 +2,9 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuex from 'vuex'
 import {mount, createLocalVue} from '@vue/test-utils'
+import flushPromises from 'flush-promises'
 
 import CreateRestaurant from '@/components/CreateRestaurant.vue'
-import restaurants from '../../../src/store/modules/restaurants'
 
 Vue.use(Vuetify)
 
@@ -43,8 +43,13 @@ describe('CreateRestaurant', () => {
     })
 
     describe('initial state', () => {
-        it('does not display any validation errors', () => {
+        it('does not display a validation error', () => {
             expect(wrapper.find('[data-testid="new-restaurant-name-error"]').exists())
+                .toBe(false)
+        })
+        
+        it('does not show a server error', () => {
+            expect(wrapper.find('[data-testid="new-restaurant-server-error"]').exists())
                 .toBe(false)
         })
     })
@@ -73,6 +78,11 @@ describe('CreateRestaurant', () => {
 
         it('does not show a validation error', () => {
             expect(wrapper.find('[data-testid="new-restaurant-name-error"]').exists())
+                .toBe(false)
+        })
+
+        it('does not show a server error', () => {
+            expect(wrapper.find('[data-testid="new-restaurant-server-error"]').exists())
                 .toBe(false)
         })
     })
@@ -116,6 +126,53 @@ describe('CreateRestaurant', () => {
         it('clears the validation error', () => {
             expect(wrapper.find('[data-testid="new-restaurant-name-error"]').exists())
                 .toBe(false)
+        })
+    })
+
+    describe('when the create restaurant server call fails', () => {
+        beforeEach(() => {
+            restaurantsModule.actions.create.mockRejectedValue()
+
+            wrapper
+                .find('[data-testid="new-restaurant-name-field"]')
+                .setValue(restaurantName)
+            wrapper
+                .find('[data-testid="new-restaurant-submit-button"]')
+                .trigger('click')
+        })
+
+        it('displays a server error', () => {
+            expect(wrapper.find('[data-testid="new-restaurant-server-error"]').exists())
+                .toBe(true)
+        })
+
+        it('does not clear the name', () => {
+            expect(wrapper.find('[data-testid="new-restaurant-name-field"]').element.value)
+                .toEqual(restaurantName)
+        })
+    })
+
+    describe('when retrying after a failed create restaurant server call', () => {
+        beforeEach(async () => {
+            restaurantsModule.actions.create
+                .mockRejectedValueOnce()
+                .mockResolvedValueOnce()
+
+            wrapper
+                .find('[data-testid="new-restaurant-name-field"]')
+                .setValue(restaurantName)
+            wrapper
+                .find('[data-testid="new-restaurant-submit-button"]')
+                .trigger('click')
+            await flushPromises()
+            wrapper
+                .find('[data-testid="new-restaurant-submit-button"]')
+                .trigger('click')
+        })
+
+        it('clears the server error', () => {
+            expect(wrapper.find('[data-testid="new-restaurant-server-error"]').exists())
+            .toBe(false)
         })
     })
 })
